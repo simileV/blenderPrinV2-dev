@@ -450,6 +450,8 @@ ccl_device_inline void principled_v2_diffuse_sss(ccl_private ShaderData *sd,
   float aniso = stack_load_float(stack, aniso_offset);
   float3 radius = stack_load_float3(stack, radius_offset) * stack_load_float(stack, scale_offset);
 
+  //radius = make_float3(1.0, 0.2, 0.1);
+
   /* Fall back to diffuse if there has been a diffuse bounce before or the radius is too small. */
   if ((path_flag & PATH_RAY_DIFFUSE_ANCESTOR) == 0 && reduce_max(radius) > 1e-7f) {
     ccl_private Bssrdf *bssrdf = bssrdf_alloc(sd, base_color * weight);
@@ -465,6 +467,9 @@ ccl_device_inline void principled_v2_diffuse_sss(ccl_private ShaderData *sd,
 
     /* Clamps protecting against bad/extreme and non physical values. */
     bssrdf->anisotropy = clamp(aniso, 0.0f, 0.9f);
+
+    //bssrdf->type = CLOSURE_BSSRDF_RANDOM_WALK_ID;
+    //bssrdf->sample_weight = 0.5f;
 
     /* setup bsdf */
     sd->flag |= bssrdf_setup(sd, bssrdf, (ClosureType)method, clamp(ior, 1.01f, 3.8f));
