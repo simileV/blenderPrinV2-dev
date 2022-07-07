@@ -471,6 +471,8 @@ ccl_device_inline void principled_v2_diffuse_sss(ccl_private ShaderData *sd,
     //bssrdf->type = CLOSURE_BSSRDF_RANDOM_WALK_ID;
     //bssrdf->sample_weight = 0.5f;
 
+    return;
+
     /* setup bsdf */
     sd->flag |= bssrdf_setup(sd, bssrdf, (ClosureType)method, clamp(ior, 1.01f, 3.8f));
 

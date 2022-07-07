@@ -344,24 +344,13 @@ ccl_device int bssrdf_setup(ccl_private ShaderData *sd,
     }
   }
 
-
-
   /* Setup BSSRDF if radius is large enough. */
   if (bssrdf_channels > 0) {
+    bssrdf->type = type;
 
-    //type = type;
-    return flag;  ////
-
-
-
-    //bssrdf->type = type;
-    //bssrdf->type = CLOSURE_BSSRDF_RANDOM_WALK_ID;
-    //return flag;  ////
-
-    //bssrdf->sample_weight = fabsf(average(bssrdf->weight)) * bssrdf_channels;
+    bssrdf->sample_weight = fabsf(average(bssrdf->weight)) * bssrdf_channels;
 
     bssrdf_setup_radius(bssrdf, type, ior);
-
 
     flag |= SD_BSSRDF;
   }
