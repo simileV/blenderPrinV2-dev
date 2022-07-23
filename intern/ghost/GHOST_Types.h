@@ -13,6 +13,10 @@
 #  include "MEM_guardedalloc.h"
 #endif
 
+#ifdef WITH_VULKAN
+#  include "vulkan/vulkan.h"
+#endif
+
 #if defined(WITH_CXX_GUARDEDALLOC) && defined(__cplusplus)
 #  define GHOST_DECLARE_HANDLE(name) \
     typedef struct name##__ { \
@@ -148,6 +152,9 @@ typedef enum { GHOST_kWindowOrderTop = 0, GHOST_kWindowOrderBottom } GHOST_TWind
 typedef enum {
   GHOST_kDrawingContextTypeNone = 0,
   GHOST_kDrawingContextTypeOpenGL,
+#ifdef WITH_VULKAN
+  GHOST_kDrawingContextTypeVulkan,
+#endif
 #ifdef WIN32
   GHOST_kDrawingContextTypeD3D,
 #endif
@@ -795,3 +802,21 @@ typedef struct GHOST_XrControllerModelData {
 } GHOST_XrControllerModelData;
 
 #endif /* WITH_XR_OPENXR */
+
+#ifdef WITH_VULKAN
+
+GHOST_DECLARE_HANDLE(GHOST_VulkanDeviceListHandle);
+
+typedef struct GHOST_VulkanPhysicalDeviceID {
+  uint32_t vendor_id;
+  uint32_t device_id;
+  int32_t index;
+} GHOST_VulkanPhysicalDeviceID;
+
+typedef struct GHOST_VulkanPhysicalDevice {
+  GHOST_VulkanPhysicalDeviceID device_id;
+  VkPhysicalDeviceProperties device_properties;
+} GHOST_VulkanPhysicalDevice;
+
+#endif
+

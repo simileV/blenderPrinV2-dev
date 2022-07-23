@@ -39,6 +39,11 @@ class GHOST_IContext {
   virtual GHOST_TSuccess releaseDrawingContext() = 0;
 
   virtual unsigned int getDefaultFramebuffer() = 0;
+  
+  virtual GHOST_TSuccess getVulkanHandles(void *, void *, void *, uint32_t *) = 0;
+
+  virtual GHOST_TSuccess getVulkanBackbuffer(
+      void *, void *, void *, void *, void *, uint32_t *) = 0;
 
   virtual GHOST_TSuccess swapBuffers() = 0;
 
