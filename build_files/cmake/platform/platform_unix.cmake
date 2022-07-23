@@ -112,6 +112,11 @@ if(NOT WITH_SYSTEM_FREETYPE)
   endif()
 endif()
 
+if(WITH_VULKAN)
+  find_package_wrapper(Vulkan REQUIRED)
+  find_package(ShaderC REQUIRED)
+endif()
+
 if(WITH_PYTHON)
   # No way to set py35, remove for now.
   # find_package(PythonLibs)

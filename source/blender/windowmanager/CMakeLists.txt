@@ -104,6 +104,12 @@ set(LIB
   bf_sequencer
 )
 
+if(WITH_VULKAN)
+  list(APPEND INC_SYS
+    ${Vulkan_INCLUDE_DIRS}
+  )
+endif()
+
 if(WITH_AUDASPACE)
   add_definitions(-DWITH_AUDASPACE)
 

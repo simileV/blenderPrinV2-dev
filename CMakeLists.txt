@@ -429,7 +429,7 @@ if(NOT APPLE)
   option(WITH_CYCLES_DEVICE_OPTIX      "Enable Cycles NVIDIA OptiX support" ON)
   mark_as_advanced(WITH_CYCLES_DEVICE_CUDA)
 
-  option(WITH_CYCLES_CUDA_BINARIES     "Build Cycles NVIDIA CUDA binaries" ON)
+  option(WITH_CYCLES_CUDA_BINARIES     "Build Cycles NVIDIA CUDA binaries" OFF)
   set(CYCLES_CUDA_BINARIES_ARCH sm_86 compute_75 CACHE STRING "CUDA architectures to build binaries for")
   option(WITH_CYCLES_CUBIN_COMPILER    "Build cubins with nvrtc based compiler instead of nvcc" OFF)
   option(WITH_CYCLES_CUDA_BUILD_SERIAL "Build cubins one after another (useful on machines with limited RAM)" OFF)
@@ -530,6 +530,9 @@ if(UNIX AND NOT APPLE)
   option(WITH_DOC_MANPAGE "Create a manual page (Unix manpage)" OFF)
 endif()
 
+# Vulkan
+option(WITH_VULKAN                    "Enable Vulkan backend (Experimental)" ON)
+option(WITH_VULKAN_SHADER_COMPILATION "Temporary flag to enable vulkan shader compilation needed to continue development during the migration of GLSL to Vulkan." ON)
 
 # OpenGL
 
@@ -569,6 +572,7 @@ mark_as_advanced(
   WITH_GLEW_ES
   WITH_GL_PROFILE_ES20
   WITH_GPU_SHADER_BUILDER
+  WITH_VULKAN_SHADER_COMPILATION
 )
 
 # Metal
@@ -1199,6 +1203,18 @@ if(WITH_OPENVDB)
   endif()
 
   list(APPEND OPENVDB_LIBRARIES ${BOOST_LIBRARIES} ${TBB_LIBRARIES})
+endif()
+
+#-----------------------------------------------------------------------------
+# Configure Vulkan.
+
+if(WITH_VULKAN)
+  list(APPEND BLENDER_GL_LIBRARIES ${Vulkan_LIBRARY})
+
+  add_definitions(-DWITH_VULKAN)
+  if(WITH_VULKAN_SHADER_COMPILATION)
+    add_definitions(-DWITH_VULKAN_SHADER_COMPILATION)
+  endif()
 endif()
 
 #-----------------------------------------------------------------------------
