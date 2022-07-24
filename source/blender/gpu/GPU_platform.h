@@ -16,6 +16,9 @@ typedef enum eGPUBackendType {
   GPU_BACKEND_NONE = 0,
   GPU_BACKEND_OPENGL = 1 << 0,
   GPU_BACKEND_METAL = 1 << 1,
+#ifdef WITH_VULKAN
+  GPU_BACKEND_VULKAN = 1 << 2,
+#endif
   GPU_BACKEND_ANY = 0xFFFFFFFFu
 } eGPUBackendType;
 

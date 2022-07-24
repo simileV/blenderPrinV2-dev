@@ -124,6 +124,7 @@ void GHOST_GetAllDisplayDimensions(GHOST_SystemHandle systemhandle,
 }
 
 GHOST_ContextHandle GHOST_CreateOpenGLContext(GHOST_SystemHandle systemhandle,
+                                              GHOST_TDrawingContextType type,
                                               GHOST_GLSettings glSettings)
 {
   GHOST_ISystem *system = (GHOST_ISystem *)systemhandle;

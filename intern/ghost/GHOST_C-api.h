@@ -181,7 +181,7 @@ extern GHOST_WindowHandle GHOST_CreateWindow(GHOST_SystemHandle systemhandle,
  * \return A handle to the new context ( == NULL if creation failed).
  */
 extern GHOST_ContextHandle GHOST_CreateOpenGLContext(GHOST_SystemHandle systemhandle,
-													GHOST_TDrawingContextType type,
+													                          GHOST_TDrawingContextType type,
                                                      GHOST_GLSettings glSettings);
 
 /**
