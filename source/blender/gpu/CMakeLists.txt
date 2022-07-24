@@ -14,6 +14,7 @@ set(INC
   intern
   metal
   opengl
+  vulkan
   ../blenkernel
   ../blenlib
   ../bmesh
@@ -222,6 +223,49 @@ endif()
 set(LIB
   ${BLENDER_GL_LIBRARIES}
 )
+
+if(WITH_VULKAN)
+  list(APPEND INC_SYS
+    ${Vulkan_INCLUDE_DIRS}
+  )
+
+  list(APPEND LIB
+    extern_vulkan_memory_allocator
+    bf_intern_shadercompiler
+    ${SHADERC_LIBRARIES}
+  )
+
+  list(APPEND INC
+    ../../../extern/vulkan_memory_allocator
+    ../../../intern/shader_compiler
+
+  )
+
+  list(APPEND SRC
+    vulkan/vk_backend.cc
+    vulkan/vk_context.cc
+    vulkan/vk_framebuffer.cc
+    vulkan/vk_texture.cc
+    vulkan/vk_shader_log.cc
+    vulkan/vk_shader.cc
+
+    vulkan/vk_backend.hh
+    vulkan/vk_batch.hh
+    vulkan/vk_context.hh
+    vulkan/vk_drawlist.hh
+    vulkan/vk_framebuffer.hh
+    vulkan/vk_immediate.hh
+    vulkan/vk_index_buffer.hh
+    vulkan/vk_primitive.hh
+    vulkan/vk_query.hh
+    vulkan/vk_shader_interface.hh
+    vulkan/vk_shader.hh
+    vulkan/vk_state.hh
+    vulkan/vk_texture.hh
+    vulkan/vk_uniform_buffer.hh
+    vulkan/vk_vertex_buffer.hh
+  )
+endif()
 
 if(NOT WITH_SYSTEM_GLEW)
   list(APPEND LIB
@@ -544,6 +588,13 @@ if(WITH_OPENCOLORIO)
 endif()
 
 blender_add_lib(bf_gpu "${SRC}" "${INC}" "${INC_SYS}" "${LIB}")
+
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID MATCHES "Clang")
+  target_compile_options(bf_gpu
+    PRIVATE "-Wno-nullability-completeness"
+  )
+endif()
+
 target_link_libraries(bf_gpu PUBLIC
   bf_draw_shaders
   bf_gpu_shaders
@@ -624,12 +675,14 @@ if(WITH_GTESTS)
       tests/gpu_testing.cc
 
       tests/gpu_index_buffer_test.cc
+	  tests/gpu_shader_compiler_test.cc
       tests/gpu_shader_builtin_test.cc
       tests/gpu_shader_test.cc
 
       tests/gpu_testing.hh
     )
     set(TEST_INC
+	 "../../../intern/shader_compiler/"
     )
     set(TEST_LIB
     )

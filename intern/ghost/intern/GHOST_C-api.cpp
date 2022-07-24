@@ -19,6 +19,9 @@
 #  include "GHOST_IXrContext.h"
 #  include "intern/GHOST_XrSession.h"
 #endif
+#ifdef WITH_VULKAN
+#  include "intern/GHOST_ContextVK.h"
+#endif
 #include "intern/GHOST_CallbackEventConsumer.h"
 #include "intern/GHOST_XrException.h"
 
@@ -125,7 +128,7 @@ GHOST_ContextHandle GHOST_CreateOpenGLContext(GHOST_SystemHandle systemhandle,
 {
   GHOST_ISystem *system = (GHOST_ISystem *)systemhandle;
 
-  return (GHOST_ContextHandle)system->createOffscreenContext(glSettings);
+  return (GHOST_ContextHandle)system->createOffscreenContext(type, glSettings);
 }
 
 GHOST_TSuccess GHOST_DisposeOpenGLContext(GHOST_SystemHandle systemhandle,
@@ -542,6 +545,13 @@ GHOST_TDrawingContextType GHOST_GetDrawingContextType(GHOST_WindowHandle windowh
   GHOST_IWindow *window = (GHOST_IWindow *)windowhandle;
 
   return window->getDrawingContextType();
+}
+
+GHOST_ContextHandle GHOST_GetDrawingContext(GHOST_WindowHandle windowhandle)
+{
+  GHOST_IWindow *window = (GHOST_IWindow *)windowhandle;
+
+  return (GHOST_ContextHandle)window->getDrawingContext();
 }
 
 GHOST_TSuccess GHOST_SetDrawingContextType(GHOST_WindowHandle windowhandle,
@@ -1173,3 +1183,74 @@ int GHOST_XrGetControllerModelData(GHOST_XrContextHandle xr_contexthandle,
 }
 
 #endif /* WITH_XR_OPENXR */
+
+#ifdef WITH_VULKAN
+
+/**
+ * Return vulkan handles for the given context.
+ */
+void GHOST_GetVulkanHandles(GHOST_ContextHandle contexthandle,
+                            void *r_instance,
+                            void *r_physical_device,
+                            void *r_device,
+                            uint32_t *r_graphic_queue_familly)
+{
+  GHOST_IContext *context = (GHOST_IContext *)contexthandle;
+
+  context->getVulkanHandles(r_instance, r_physical_device, r_device, r_graphic_queue_familly);
+}
+
+/**
+ * Return vulkan backbuffer resources handles for the given window.
+ */
+void GHOST_GetVulkanBackbuffer(GHOST_WindowHandle windowhandle,
+                               void *image,
+                               void *framebuffer,
+                               void *command_buffer,
+                               void *render_pass,
+                               void *extent,
+                               uint32_t *fb_id)
+{
+  GHOST_IWindow *window = (GHOST_IWindow *)windowhandle;
+
+  window->getVulkanBackbuffer(image, framebuffer, command_buffer, render_pass, extent, fb_id);
+}
+
+/**
+ * \brief Query vulkan devices.
+ *
+ * \returns a device list handle or NULL when there is no vulkan available.
+ */
+GHOST_VulkanDeviceListHandle GHOST_QueryVulkanDevices(GHOST_ContextHandle contexthandle)
+{
+  GHOST_ContextVK *context = (GHOST_ContextVK *)contexthandle;
+  return (GHOST_VulkanDeviceListHandle)context->queryDevices();
+}
+
+/**
+ * \brief Destroy the given device list.
+ */
+GHOST_TSuccess GHOST_DestroyVulkanDeviceList(GHOST_VulkanDeviceListHandle device_list_handle)
+{
+  if (device_list_handle == nullptr) {
+    return GHOST_kFailure;
+  }
+
+  GHOST_ContextVK::destroyDeviceList((GHOST_VulkanDeviceList *)device_list_handle);
+  return GHOST_kSuccess;
+}
+
+/**
+ * \brief Get an item from the given device list.
+ *
+ * \returns GHOST_kSuccess when device is loaded. GHOST_kFailure when the given device_list_handle
+ * is incorrect or the given index is out of range.
+ */
+GHOST_TSuccess GHOST_GetVulkanDeviceListItem(GHOST_VulkanDeviceListHandle device_list_handle,
+                                             int64_t index,
+                                             GHOST_VulkanPhysicalDevice *r_device)
+{
+  return GHOST_kFailure;
+}
+
+#endif /* WITH_VULKAN */

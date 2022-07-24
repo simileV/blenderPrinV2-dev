@@ -519,6 +519,13 @@ static void wm_window_ghostwindow_add(wmWindowManager *wm,
   if (G.debug & G_DEBUG_GPU) {
     glSettings.flags |= GHOST_glDebugContext;
   }
+  
+   GHOST_TDrawingContextType contextType = GHOST_kDrawingContextTypeOpenGL;
+#ifdef WITH_VULKAN
+  if (G.debug & G_DEBUG_VK_CONTEXT) {
+    contextType = GHOST_kDrawingContextTypeVulkan;
+  }
+#endif
 
   int scr_w, scr_h;
   wm_get_desktopsize(&scr_w, &scr_h);
@@ -541,7 +548,7 @@ static void wm_window_ghostwindow_add(wmWindowManager *wm,
                                                    glSettings);
 
   if (ghostwin) {
-    win->gpuctx = GPU_context_create(ghostwin);
+    win->gpuctx = GPU_context_create(ghostwin, NULL);
 
     /* needed so we can detect the graphics card below */
     GPU_init();
@@ -2330,12 +2337,19 @@ void *WM_opengl_context_create(void)
 
   BLI_assert(BLI_thread_is_main());
   BLI_assert(GPU_framebuffer_active_get() == GPU_framebuffer_back_get());
+  GHOST_TDrawingContextType type = GHOST_kDrawingContextTypeOpenGL;
+
+#ifdef WITH_VULKAN
+  if (G.debug & G_DEBUG_VK_CONTEXT) {
+    type = GHOST_kDrawingContextTypeVulkan;
+  }
+#endif
 
   GHOST_GLSettings glSettings = {0};
   if (G.debug & G_DEBUG_GPU) {
     glSettings.flags |= GHOST_glDebugContext;
   }
-  return GHOST_CreateOpenGLContext(g_system, glSettings);
+  return GHOST_CreateOpenGLContext(g_system, type, glSettings);
 }
 
 void WM_opengl_context_dispose(void *context)

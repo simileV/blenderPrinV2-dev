@@ -641,7 +641,7 @@ if(WITH_GTESTS)
     set(TEST_SRC
       tests/draw_testing.cc
       tests/shaders_test.cc
-
+	  tests/performance_test.cc
       tests/draw_testing.hh
     )
     set(TEST_INC
