@@ -316,7 +316,7 @@ MainWindow *mainwindow_new(MultiTestApp *app)
   if (win) {
     MainWindow *mw = MEM_callocN(sizeof(*mw), "mainwindow_new");
 
-    mw->gpu_context = GPU_context_create(win);
+    mw->gpu_context = GPU_context_create(win, NULL);
     GPU_init();
 
     mw->app = app;
@@ -573,7 +573,7 @@ LoggerWindow *loggerwindow_new(MultiTestApp *app)
   if (win) {
     LoggerWindow *lw = MEM_callocN(sizeof(*lw), "loggerwindow_new");
 
-    lw->gpu_context = GPU_context_create(win);
+    lw->gpu_context = GPU_context_create(win, NULL);
     GPU_init();
 
     int bbox[2][2];
@@ -775,7 +775,7 @@ ExtraWindow *extrawindow_new(MultiTestApp *app)
   if (win) {
     ExtraWindow *ew = MEM_callocN(sizeof(*ew), "mainwindow_new");
 
-    ew->gpu_context = GPU_context_create(win);
+    ew->gpu_context = GPU_context_create(win, NULL);
     GPU_init();
 
     ew->app = app;

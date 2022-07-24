@@ -32,19 +32,21 @@ class GLBackend : public GPUBackend {
   GLSharedOrphanLists shared_orphan_list_;
 
  public:
-  GLBackend()
+
+  ~GLBackend()
+  {
+    GLTexture::samplers_free();
+
+    GLBackend::platform_exit();
+  }
+
+  void init() override
   {
     /* platform_init needs to go first. */
     GLBackend::platform_init();
 
     GLBackend::capabilities_init();
     GLTexture::samplers_init();
-  }
-  ~GLBackend()
-  {
-    GLTexture::samplers_free();
-
-    GLBackend::platform_exit();
   }
 
   static GLBackend *get()
@@ -57,7 +59,7 @@ class GLBackend : public GPUBackend {
     GLTexture::samplers_update();
   };
 
-  Context *context_alloc(void *ghost_window) override
+  Context *context_alloc(void *ghost_window, void *UNUSED(ghost_context)) override
   {
     return new GLContext(ghost_window, shared_orphan_list_);
   };

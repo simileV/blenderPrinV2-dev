@@ -20,6 +20,8 @@
 #include "BLI_assert.h"
 #include "BLI_utildefines.h"
 
+#include "BKE_global.h"
+
 #include "GPU_context.h"
 #include "GPU_framebuffer.h"
 
@@ -32,6 +34,12 @@
 #  include "gl_backend.hh"
 #  include "gl_context.hh"
 #endif
+
+#ifdef WITH_VULKAN
+#  include "vk_backend.hh"
+#  include "vk_context.hh"
+#endif
+
 #ifdef WITH_METAL_BACKEND
 #  include "mtl_backend.hh"
 #endif
@@ -83,16 +91,31 @@ Context *Context::get()
 
 /* -------------------------------------------------------------------- */
 
-GPUContext *GPU_context_create(void *ghost_window)
+GPUContext *GPU_context_create(void *ghost_window, void *ghost_context)
 {
-  if (GPUBackend::get() == nullptr) {
-    /* TODO: move where it make sense. */
-    GPU_backend_init(GPU_BACKEND_OPENGL);
+  bool backend_created = false;
+	
+  if (GPUBackend::get() == nullptr) {	
+	/* FIXME We should get the context type from ghost instead of guessing it. */
+    eGPUBackendType type = GPU_BACKEND_OPENGL;
+#ifdef WITH_VULKAN
+    if (G.debug & G_DEBUG_VK_CONTEXT) {
+      type = GPU_BACKEND_VULKAN;
+    }
+#endif
+    backend_created = true;
+    GPU_backend_create(type);
   }
 
-  Context *ctx = GPUBackend::get()->context_alloc(ghost_window);
+  GPUBackend *backend = GPUBackend::get();
+  Context *ctx = backend->context_alloc(ghost_window, ghost_context);
 
   GPU_context_active_set(wrap(ctx));
+  
+  if (backend_created) {
+    backend->init();
+  }
+  
   return wrap(ctx);
 }
 

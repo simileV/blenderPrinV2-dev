@@ -196,7 +196,8 @@ enum {
   G_DEBUG_XR = (1 << 19),                    /* XR/OpenXR messages */
   G_DEBUG_XR_TIME = (1 << 20),               /* XR/OpenXR timing messages */
 
-  G_DEBUG_GHOST = (1 << 21),  /* Debug GHOST module. */
+  G_DEBUG_GHOST = (1 << 21),      /* Debug GHOST module. */
+  G_DEBUG_VK_CONTEXT = (1 << 22), /* not a debug flag, TODO move it. */
   G_DEBUG_WINTAB = (1 << 22), /* Debug Wintab. */
 };
 

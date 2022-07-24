@@ -8,6 +8,7 @@ namespace blender::draw {
 class DrawOpenGLTest : public blender::gpu::GPUOpenGLTest {
  public:
   void SetUp() override;
+  void TearDown() override;
 };
 
 #define DRAW_TEST(test_name) \

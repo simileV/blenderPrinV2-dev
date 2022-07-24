@@ -4,6 +4,8 @@
 
 #include "GHOST_C-api.h"
 
+#include "BKE_global.h"
+
 struct GPUContext;
 
 namespace blender::gpu {
@@ -35,13 +37,42 @@ class GPUOpenGLTest : public GPUTest {
  public:
   GPUOpenGLTest() : GPUTest(GHOST_kDrawingContextTypeOpenGL)
   {
+	  G.debug &= ~G_DEBUG_VK_CONTEXT;
   }
 };
 
-#define GPU_TEST(test_name) \
-  TEST_F(GPUOpenGLTest, test_name) \
-  { \
-    test_##test_name(); \
+#ifdef WITH_VULKAN
+
+class GPUVulkanTest : public GPUTest {
+ public:
+  GPUVulkanTest() : GPUTest(GHOST_kDrawingContextTypeVulkan)
+  {
+    G.debug |= G_DEBUG_VK_CONTEXT;
   }
+};
+
+#endif
+
+#ifdef WITH_VULKAN
+
+#  define GPU_TEST(test_name) \
+    TEST_F(GPUOpenGLTest, test_name) \
+    { \
+      test_##test_name(); \
+    } \
+    TEST_F(GPUVulkanTest, test_name) \
+    { \
+      test_##test_name(); \
+    }
+
+#else /* WITH_VULKAN */
+
+#  define GPU_TEST(test_name) \
+    TEST_F(GPUOpenGLTest, test_name) \
+    { \
+      test_##test_name(); \
+    }
+
+#endif /* WITH_VULKAN */
 
 }  // namespace blender::gpu

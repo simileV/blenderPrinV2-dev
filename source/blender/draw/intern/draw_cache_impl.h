@@ -7,6 +7,12 @@
 
 #pragma once
 
+#include "BKE_mesh_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct GPUBatch;
 struct GPUIndexBuf;
 struct GPUMaterial;
@@ -25,12 +31,6 @@ struct MetaBall;
 struct PointCloud;
 struct Volume;
 struct bGPdata;
-
-#include "BKE_mesh_types.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* -------------------------------------------------------------------- */
 /** \name Expose via BKE callbacks

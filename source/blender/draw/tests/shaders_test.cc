@@ -283,7 +283,7 @@ static void test_overlay_glsl_shaders()
 }
 DRAW_TEST(overlay_glsl_shaders)
 
-static void test_eevee_glsl_shaders_static()
+static void test_eevee_glsl_shaders()
 {
   EEVEE_shaders_material_shaders_init();
 
@@ -372,7 +372,7 @@ static void test_eevee_glsl_shaders_static()
   EXPECT_NE(EEVEE_shaders_effect_reflection_resolve_sh_get(), nullptr);
   EEVEE_shaders_free();
 }
-DRAW_TEST(eevee_glsl_shaders_static)
+DRAW_TEST(eevee_glsl_shaders)
 
 static void test_draw_shaders(eParticleRefineShaderType sh_type)
 {

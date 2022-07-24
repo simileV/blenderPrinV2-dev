@@ -867,6 +867,9 @@ static char *glsl_patch_default_get()
 
   /* GLSL Backend Lib. */
   STR_CONCAT(patch, slen, datatoc_glsl_shader_defines_glsl);
+  
+  /* Converting Vulkan GLSL to OpenGL GLSL. */
+  STR_CONCAT(patch, slen, "#define gl_VertexIndex gl_VertexID\n");
 
   BLI_assert(slen < sizeof(patch));
   return patch;

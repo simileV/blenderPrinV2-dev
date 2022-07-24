@@ -2,6 +2,7 @@
 
 #include "testing/testing.h"
 
+#include "BKE_global.h"
 #include "CLG_log.h"
 
 #include "GPU_context.h"
@@ -17,9 +18,9 @@ void GPUTest::SetUp()
   GHOST_GLSettings glSettings = {0};
   CLG_init();
   ghost_system = GHOST_CreateSystem();
-  ghost_context = GHOST_CreateOpenGLContext(ghost_system, glSettings);
+  ghost_context = GHOST_CreateOpenGLContext(ghost_system, draw_context_type, glSettings);
   GHOST_ActivateOpenGLContext(ghost_context);
-  context = GPU_context_create(nullptr);
+  context = GPU_context_create(NULL, ghost_context);
   GPU_init();
 }
 
